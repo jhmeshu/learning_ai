@@ -173,7 +173,9 @@ export async function readDb(): Promise<DB> {
 
 export async function writeDb(db: DB): Promise<void> {
   await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2), "utf8");
+  const tmpPath = `${DB_PATH}.${Date.now()}.${Math.random().toString(36).substring(2, 8)}.tmp`;
+  await fs.writeFile(tmpPath, JSON.stringify(db, null, 2), "utf8");
+  await fs.rename(tmpPath, DB_PATH);
 }
 
 async function ensureDb(): Promise<void> {
